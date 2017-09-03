@@ -1,5 +1,6 @@
 const express = require('express');
 const path = require('path');
+const socket = require('socket.io');
 
 const app = express();
 
@@ -30,4 +31,24 @@ app.get('*', (req, res) => {
 const port = process.env.PORT || 3001;
 app.listen(port);
 
+//Socket part
+
+
+socket.on('heartRate', (data) => {
+  io.emit('heartRate', data);
+})
+
+socket.on('flex', (data) => {
+  io.emit('flex', data);
+})
+
+socket.on('accelerometer', (data) => {
+  io.emit('accelerometer', data);
+})
+
+socket.on('randomOSC', (data) => {
+  io.emit('randomOSC', data);
+  console.log(data);
+});
+//
 console.log(`nmd-glove listening on ${port}`);
