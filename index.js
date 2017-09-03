@@ -29,7 +29,7 @@ app.get('*', (req, res) => {
 });
 
 const port = process.env.PORT || 3001;
-app.listen(port);
+const server = app.listen(port);
 
 //Socket part
 const io = socket(server);
