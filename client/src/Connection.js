@@ -1,7 +1,6 @@
 import { EventEmitter } from 'events';
 import Socket from 'socket.io-client';
-
-const SOCKET_SERVER_URL = 'https://thawing-cove-70894.herokuapp.com/';
+import {SOCKET_SERVER_URL} from './config.js';
 
 /**
 // TODO
