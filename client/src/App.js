@@ -1,9 +1,31 @@
 import React, { Component } from 'react';
+import Connection from './Connection';
+import DonutChart from './DonutChart';
 import './App.css';
 
 class App extends Component {
   // Initialize state
-  state = { passwords: [] }
+  constructor() {
+    super();
+    this.state = {
+      passwords: [],
+      heartrate: 114,
+      flex: 0.4,
+      accelerometerX: 0.1,
+      accelerometerY: 0.1,
+      accelerometerZ: 0.1,
+    }
+    this._connection = new Connection();
+    this.updateHeartrate = this.updateHeartrate.bind(this);
+    console.log(this._connection);
+
+    //Listen to Connection.emit
+    this._connection.on('UPDATE_HEARTRATE', (data) => {
+      console.log('received heartRate', data);
+      this.setState({heartrate: data})
+    });
+  }
+
 
   // Fetch passwords after first mount
   componentDidMount() {
@@ -15,6 +37,10 @@ class App extends Component {
     fetch('/api/passwords')
       .then(res => res.json())
       .then(passwords => this.setState({ passwords }));
+  }
+
+  updateHeartrate = () => {
+    this._connection.updateHeartrate(78);
   }
 
   render() {
@@ -51,11 +77,14 @@ class App extends Component {
             <h1>No passwords :(</h1>
             <button
               className="more"
-              onClick={this.getPasswords}>
-              Try Again?
+              onClick={this.updateHeartrate}>
+              Update heartrate?
             </button>
           </div>
         )}
+        <svg width="300" height="300">
+          <DonutChart width={300} height={300} value={this.state.heartrate}/>
+        </svg>
       </div>
     );
   }
