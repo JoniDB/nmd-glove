@@ -32,23 +32,27 @@ const port = process.env.PORT || 3001;
 app.listen(port);
 
 //Socket part
+const io = socket(server);
+io.sockets.on('connection', newConnection);
 
+//all websocket functions
+function newConnection(socket) {
+  socket.on('heartRate', (data) => {
+    io.emit('heartRate', data);
+  })
 
-socket.on('heartRate', (data) => {
-  io.emit('heartRate', data);
-})
+  socket.on('flex', (data) => {
+    io.emit('flex', data);
+  })
 
-socket.on('flex', (data) => {
-  io.emit('flex', data);
-})
+  socket.on('accelerometer', (data) => {
+    io.emit('accelerometer', data);
+  })
 
-socket.on('accelerometer', (data) => {
-  io.emit('accelerometer', data);
-})
-
-socket.on('randomOSC', (data) => {
-  io.emit('randomOSC', data);
-  console.log(data);
-});
+  socket.on('randomOSC', (data) => {
+    io.emit('randomOSC', data);
+    console.log(data);
+  });
+};
 //
 console.log(`nmd-glove listening on ${port}`);
