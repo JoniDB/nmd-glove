@@ -32,7 +32,7 @@ const port = process.env.PORT || 3001;
 const server = app.listen(port);
 
 //Socket part
-const io = socket(server);
+const io = socket(5000);
 io.sockets.on('connection', newConnection);
 
 //all websocket functions
