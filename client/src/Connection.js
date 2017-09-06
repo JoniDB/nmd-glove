@@ -33,8 +33,12 @@ class Connection extends EventEmitter {
 
     // Receiving events
     this._socket.on('heartRate', (data) => {
-      console.log('update heartrate', data);
       this.emit('UPDATE_HEARTRATE', data);
+    });
+
+    // Receiving events
+    this._socket.on('light', (data) => {
+      this.emit('UPDATE_LIGHT', data);
     });
   }
 

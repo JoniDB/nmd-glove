@@ -2,4 +2,18 @@ body {
   margin: 0;
   padding: 0;
   font-family: sans-serif;
+  background: #ecf0f1;
+}
+
+.bar--positive {
+  fill: #1abc9c;
+}
+
+.bar--negative {
+  fill: #16a085;
+}
+
+.chart {
+  display: inline-block;
+  margin: 20px;
 }

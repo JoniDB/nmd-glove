@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import BarChart from './BarChart';
 import Connection from './Connection';
 import DonutChart from './DonutChart';
 import './App.css';
@@ -8,35 +9,26 @@ class App extends Component {
   constructor() {
     super();
     this.state = {
+      accelerometerX: 0.58,
+      accelerometerY: 0.2,
+      accelerometerZ: -0.58,
       passwords: [],
-      heartrate: 114,
+      heartrate: 0,
       flex: 0.4,
-      accelerometerX: 0.1,
-      accelerometerY: 0.1,
-      accelerometerZ: 0.1,
+      light: 0
     }
     this._connection = new Connection();
     this.updateHeartrate = this.updateHeartrate.bind(this);
-    console.log(this._connection);
 
     //Listen to Connection.emit
+    const _this = this;
     this._connection.on('UPDATE_HEARTRATE', (data) => {
-      console.log('received heartRate', data);
-      this.setState({heartrate: data})
+      _this.setState({heartrate: parseInt(data)})
     });
-  }
 
-
-  // Fetch passwords after first mount
-  componentDidMount() {
-    this.getPasswords();
-  }
-
-  getPasswords = () => {
-    // Get the passwords and store them in state
-    fetch('/api/passwords')
-      .then(res => res.json())
-      .then(passwords => this.setState({ passwords }));
+    this._connection.on('UPDATE_LIGHT', (data) => {
+      _this.setState({light: parseInt(data)})
+    });
   }
 
   updateHeartrate = () => {
@@ -44,47 +36,39 @@ class App extends Component {
   }
 
   render() {
-    const { passwords } = this.state;
+    const { accelerometerX, accelerometerY, accelerometerZ, passwords, heartrate, light } = this.state;
 
     return (
       <div className="App">
-        {/* Render the passwords if we have them */}
-        {passwords.length ? (
           <div>
-            <h1>5 Passwords.</h1>
-            <ul className="passwords">
-              {/*
-                Generally it's bad to use "index" as a key.
-                It's ok for this example because there will always
-                be the same number of passwords, and they never
-                change positions in the array.
-              */}
-              {passwords.map((password, index) =>
-                <li key={index}>
-                  {password}
-                </li>
-              )}
-            </ul>
-            <button
-              className="more"
-              onClick={this.getPasswords}>
-              Get More
-            </button>
-          </div>
-        ) : (
-          // Render a helpful message otherwise
-          <div>
-            <h1>No passwords :(</h1>
+            <h1>NMD Glove</h1>
             <button
               className="more"
               onClick={this.updateHeartrate}>
               Update heartrate?
             </button>
           </div>
-        )}
-        <svg width="300" height="300">
-          <DonutChart width={300} height={300} value={this.state.heartrate}/>
-        </svg>
+        <div className="chart">
+          <svg width={"200"} height="200">
+            <DonutChart height={200} totalCount={1024} width={200} value={heartrate}/>
+          </svg>
+          <h5>heartbeat</h5>
+          <h2>{heartrate}</h2>
+        </div>
+        <div className="chart">
+          <svg width={"200"} height="200">
+            <BarChart height={200} totalCount={1024} width={200} values={[-0.58, 0.6, 0.8]}/>
+          </svg>
+          <h5>accelerometer</h5>
+          <h2>x: {accelerometerX}, y: {accelerometerY}, z: {accelerometerZ}</h2>
+        </div>
+        <div className="chart">
+          <svg width={"200"} height="200">
+            <DonutChart height={200} totalCount={1000} width={200} value={light}/>
+          </svg>
+          <h5>light</h5>
+          <h2>{light}</h2>
+        </div>
       </div>
     );
   }
